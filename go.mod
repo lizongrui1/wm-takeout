@@ -10,6 +10,8 @@ require (
 	github.com/sony/sonyflake v1.1.0
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.24.0
+	golang.org/x/time v0.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/gorm v1.25.1
+	gorm.io/driver/mysql v1.5.6
+	gorm.io/gorm v1.25.7
 )
