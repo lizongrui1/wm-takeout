@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"time"
+	"wm-take-out/global"
 )
 
 func InitDatebase(dsn string) *gorm.DB {

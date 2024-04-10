@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type employee struct {
 	Id         uint64    `json:"id"`
@@ -15,4 +18,8 @@ type employee struct {
 	UpdateTime time.Time `json:"updateTime"`
 	CreateUser uint64    `json:"createUser"`
 	UpdateUser uint64    `json:"updateUser"`
+}
+
+func (e employee) BeforeCreate(tx *gorm.DB) error {
+	
 }

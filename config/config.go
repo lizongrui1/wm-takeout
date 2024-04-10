@@ -1,5 +1,17 @@
 package config
 
+import "wm-take-out/global"
+
+type AllConfig struct {
+	Server     Server
+	DataSource DataSource
+	Redis      Redis
+	Log        global.Log
+	Jwt        Jwt
+	AliOss     AliOss
+	Wechat     Wechat
+}
+
 type DataSource struct {
 	Host     string
 	Port     string
@@ -7,6 +19,13 @@ type DataSource struct {
 	Password string
 	DBName   string `mapstructure:"db_name"`
 	Config   string
+}
+
+type Redis struct {
+	Host     string
+	Port     string
+	Password string
+	DataBase int `mapstructure:"data_base"`
 }
 
 func (d *DataSource) Dsn() string {
