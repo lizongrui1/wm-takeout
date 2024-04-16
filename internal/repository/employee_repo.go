@@ -6,8 +6,10 @@ import (
 )
 
 type EmployeeRepo interface {
-	GetUserName(ctx context.Context, userName string) (*model.Employee, error)
-	GetId(ctx context.Context, id uint64) (*model.Employee, error)
-	InsertUser(ctx context.Context, entity model.Employee) error
+	GetByUserName(ctx context.Context, userName string) (*model.Employee, error)
+	GetById(ctx context.Context, id uint64) (*model.Employee, error)
+	InsertUser(ctx context.Context, user model.Employee) error
 	UpdateUser(ctx context.Context, employee model.Employee) error
+	UpdateStatus(ctx context.Context, employee model.Employee) error
+	PageQuery(ctx context.Context)
 }
