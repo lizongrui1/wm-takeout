@@ -41,5 +41,5 @@ func (s *SetMeal) BeforeUpdate(tx *gorm.DB) error {
 }
 
 func (s *SetMeal) TableName() string {
-	return "set meal"
+	return "setmeal"
 }

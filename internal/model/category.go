@@ -37,3 +37,7 @@ func (c *Category) BeforeUpdate(tx *gorm.DB) error {
 	}
 	return nil
 }
+
+func (c *Category) TableName() string {
+	return "category"
+}

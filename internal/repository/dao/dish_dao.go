@@ -43,6 +43,16 @@ func (d *DishDao) Update(db *gorm.DB, dish model.Dish) error {
 	return err
 }
 
-func (d *DishDao) GetById(db *gorm.DB, id uint64) (*model.Dish, error) {
+func (d *DishDao) GetById(ctx context.Context, id uint64) (*model.Dish, error) {
+	var dish model.Dish
+	err := d.db.WithContext(ctx).Preload("Flavors").Where("id = ?", id).First(&dish).Error
+	if err != nil {
+		return nil, err
+	}
+	return &dish, nil
+}
 
+func (d *DishDao) Status(ctx context.Context, dish model.Dish) error {
+	err := d.db.WithContext(ctx).Model(&dish).Update("status", dish.Status).Error
+	return err
 }

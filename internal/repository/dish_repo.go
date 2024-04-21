@@ -14,5 +14,5 @@ type DishRepo interface {
 	Delete(db *gorm.DB, id uint64) error
 	Update(db *gorm.DB, dish model.Dish) error
 	GetById(ctx context.Context, id uint64) (*model.Dish, error)
-	Status(ctx context.Context, id uint64, status model.Dish) error
+	Status(ctx context.Context, dish model.Dish) error
 }

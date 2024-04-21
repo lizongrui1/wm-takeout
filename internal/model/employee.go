@@ -46,3 +46,7 @@ func (e *Employee) AfterFind(tx *gorm.DB) error {
 	e.CreateTime.Format(time.DateTime)
 	return nil
 }
+
+func (e *Employee) TableName() string {
+	return "employee"
+}
