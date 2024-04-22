@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"google.golang.org/genproto/googleapis/cloud/common"
 	"gorm.io/gorm"
 	"wm-take-out/global/tx"
 	"wm-take-out/internal/api/request"

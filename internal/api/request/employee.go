@@ -13,7 +13,7 @@ type EmployeeEditPassWord struct {
 
 type EmployeeDTO struct {
 	Id       uint64 `json:"id"`
-	IdNumber string `json:"id_number" binding:"required"`
+	IdNumber string `json:"idNumber" binding:"required"`
 	Name     string `json:"name" binding:"required"`
 	Phone    string `json:"phone" binding:"required"`
 	Sex      string `json:"sex" binding:"required"`

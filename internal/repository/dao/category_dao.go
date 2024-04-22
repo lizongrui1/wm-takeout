@@ -28,8 +28,7 @@ func (c *Category) Update(ctx context.Context, category model.Category) error {
 }
 
 func (c *Category) PageQuery(ctx context.Context, dto request.CategoryPageQueryDTO) error {
-	err := c.db.WithContext(ctx).Model()
-	return err
+
 }
 
 func (c *Category) SetStatus(ctx context.Context, category model.Category) error {
