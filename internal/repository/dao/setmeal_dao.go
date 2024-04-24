@@ -6,6 +6,7 @@ import (
 	"wm-take-out/common"
 	"wm-take-out/global/tx"
 	"wm-take-out/internal/api/request"
+	"wm-take-out/internal/enum"
 	"wm-take-out/internal/model"
 	"wm-take-out/internal/repository"
 )
@@ -28,7 +29,7 @@ func (s *SetMealDao) InsertCombo(trans tx.Transaction, meal *model.SetMeal) erro
 }
 
 func (s *SetMealDao) DeleteCombo(ctx context.Context, id uint64) error {
-	err := s.db.WithContext(ctx).Model(&model.SetMeal{Id: id}).Update("status", common.StatusInactive).Error
+	err := s.db.WithContext(ctx).Model(&model.SetMeal{Id: id}).Update("status", enum.DISABLE).Error
 	return err
 }
 

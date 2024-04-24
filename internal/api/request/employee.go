@@ -5,7 +5,7 @@ type EmployeeLogin struct {
 	Password string `json:"password" binding:"required"`
 }
 
-type EmployeeEditPassWord struct {
+type EmployeeChangePassWord struct {
 	EmpId       uint64 `json:"empId"`
 	NewPassword string `json:"newPassword" binding:"required"`
 	OldPassword string `json:"oldPassword" binding:"required"`
