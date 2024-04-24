@@ -6,6 +6,6 @@ import (
 )
 
 type SetMealDishRepo interface {
-	InsertCombo(db tx.Transaction, setMealDishs []model.SetMealDish) error
-	GetBySetMealId(db tx.Transaction, Id uint64) ([]model.SetMealDish, error)
+	InsertCombo(trans tx.Transaction, setmealDishs []model.SetMealDish) error
+	GetBySetMealId(trans tx.Transaction, Id uint64) ([]model.SetMealDish, error)
 }
