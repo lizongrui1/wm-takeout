@@ -7,6 +7,7 @@ import (
 	"wm-take-out/common/utils"
 	"wm-take-out/internal/api/request"
 	"wm-take-out/internal/api/response"
+	"wm-take-out/internal/enum"
 	"wm-take-out/internal/model"
 	"wm-take-out/internal/repository"
 )
@@ -35,5 +36,8 @@ func (es *EmployeeSe) Login(ctx context.Context, login request.EmployeeLogin) (*
 	if password != employee.Password {
 		return nil, e.Error_PASSWORD_ERROR
 	}
-
+	if employee.Status != enum.DISABLE {
+		return nil, e.Error_ACCOUNT_LOCKED
+	}
+	
 }
