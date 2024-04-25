@@ -3,7 +3,7 @@ package response
 import "time"
 
 type EmployeeLogin struct {
-	Id       int64  `json:"id"`
+	Id       uint64 `json:"id"`
 	Name     string `json:"name"`
 	Token    string `json:"token"`
 	UserName string `json:"username"`

@@ -8,7 +8,7 @@ import (
 
 type Employee struct {
 	Id         uint64    `json:"id"`
-	UserName   string    `json:"user_name"`
+	UserName   string    `json:"username"`
 	Name       string    `json:"name"`
 	Password   string    `json:"password"`
 	Phone      string    `json:"phone"`

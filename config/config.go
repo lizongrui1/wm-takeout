@@ -31,3 +31,14 @@ type Redis struct {
 func (d *DataSource) Dsn() string {
 	return d.UserName + ":" + d.Password + "@tcp(" + d.Host + ":" + d.Port + ")/" + d.DBName + "?" + d.Config
 }
+
+type Jwt struct {
+	Admin JwtOption
+	User  JwtOption
+}
+
+type JwtOption struct {
+	Secret string
+	TTL    string
+	Name   string
+}

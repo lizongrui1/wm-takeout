@@ -9,6 +9,8 @@ var (
 	Error_ALREADY_EXISTS                 = errors.New("已存在")
 	Error_UNKNOWN_ERROR                  = errors.New("未知错误")
 	Error_USER_NOT_LOGIN                 = errors.New("用户未登录")
+	Error_NO_AUTH_HEADER                 = errors.New("未找到认证头部")
+	Error_FAILED_TO_LOGOUT               = errors.New("登出失败")
 	Error_CATEGORY_BE_RELATED_BY_SETMEAL = errors.New("当前分类关联了套餐,不能删除")
 	Error_CATEGORY_BE_RELATED_BY_DISH    = errors.New("当前分类关联了菜品,不能删除")
 	Error_SHOPPING_CART_IS_NULL          = errors.New("购物车数据为空，不能下单")
