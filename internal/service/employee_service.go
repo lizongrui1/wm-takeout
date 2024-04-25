@@ -15,13 +15,13 @@ import (
 )
 
 type EmployeeService interface {
-	Login(ctx context.Context, login request.EmployeeLogin) (response.EmployeeLogin, error)
+	Login(ctx context.Context, login request.EmployeeLogin) (*response.EmployeeLogin, error)
 	Logout(ctx context.Context) error
 	CreateEmployee(ctx context.Context, dto request.EmployeeDTO) error
 	EditPassword(ctx context.Context, word request.EmployeeChangePassWord) error
-	EditEmployee(ctx context.Context, dto request.EmployeeDTO) error
+	UpdateEmployee(ctx context.Context, dto request.EmployeeDTO) error
 	EmployeeQueryById(ctx context.Context, id uint64) (model.Employee, error)
-	EmployeeStatus(ctx context.Context, status int) error
+	EmployeeStatus(ctx context.Context, id uint64, status int) error
 	PageQuery(ctx context.Context, dto request.EmployeePageQueryDTO) (*common.PageResult, error)
 }
 
@@ -89,5 +89,56 @@ func (es *EmployeeSe) CreateEmployee(ctx context.Context, dto request.EmployeeDT
 }
 
 func (es *EmployeeSe) EditPassword(ctx context.Context, word request.EmployeeChangePassWord) error {
+	employee, err := es.repo.GetById(ctx, word.EmpId)
+	if err != nil {
+		return err
+	}
+	if employee == nil {
+		return e.Error_ACCOUNT_NOT_FOUND
+	}
+	oldHashPassword := utils.MD5V(word.OldPassword, "", 0)
+	if employee.Password != oldHashPassword {
+		return e.Error_PASSWORD_ERROR
+	}
+	// 修改员工密码
+	newHashPassword := utils.MD5V(word.NewPassword, "", 0) // 使用新密码生成哈希值
+	err = es.repo.UpdateUser(ctx, model.Employee{
+		Id:       word.EmpId,
+		Password: newHashPassword,
+	})
+	return err
+}
 
+func (es *EmployeeSe) UpdateEmployee(ctx context.Context, dto request.EmployeeDTO) error {
+	err := es.repo.UpdateUser(ctx, model.Employee{
+		Id:       dto.Id,
+		IdNumber: dto.IdNumber,
+		Name:     dto.Name,
+		Phone:    dto.Phone,
+		Sex:      dto.Sex,
+		UserName: dto.Name,
+	})
+	return err
+}
+
+func (es *EmployeeSe) EmployeeQueryById(ctx context.Context, id uint64) (model.Employee, error) {
+	employee, err := es.repo.GetById(ctx, id)
+	//employee.Password = "***"  // 在真实密码的上下文中屏蔽密码
+	return *employee, err
+}
+
+func (es *EmployeeSe) EmployeeStatus(ctx context.Context, id uint64, status int) error {
+	err := es.repo.UpdateStatus(ctx, model.Employee{
+		Id:     id,
+		Status: status,
+	})
+	return err
+}
+
+func (es *EmployeeSe) PageQuery(ctx context.Context, dto request.EmployeePageQueryDTO) (*common.PageResult, error) {
+
+}
+
+func NewEmployeeService(repo repository.EmployeeRepo) EmployeeService {
+	return &EmployeeSe{repo: repo}
 }
