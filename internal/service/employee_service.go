@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"strings"
 	"wm-take-out/common"
 	"wm-take-out/common/e"
 	"wm-take-out/common/utils"
-	"wm-take-out/global"
 	"wm-take-out/internal/api/request"
 	"wm-take-out/internal/api/response"
 	"wm-take-out/internal/enum"
@@ -38,56 +36,8 @@ func (es *EmployeeSe) Login(ctx context.Context, login request.EmployeeLogin) (*
 	if password != employee.Password {
 		return nil, e.Error_PASSWORD_ERROR
 	}
-
-	// 生成Token
-	jwtConfig := global.Config.Jwt.Admin
-	token, err := utils.GenerateToken(employee.Id, jwtConfig.Name, jwtConfig.Secret)
-	if err != nil {
-		return nil, err
+	if employee.Status != enum.DISABLE {
+		return nil, e.Error_ACCOUNT_LOCKED
 	}
-	// 构造返回数据
-	resp := response.EmployeeLogin{
-		Id:       employee.Id,
-		Name:     employee.Name,
-		Token:    token,
-		UserName: employee.UserName,
-	}
-	return &resp, nil
-}
-
-func (es *EmployeeSe) Logout(ctx context.Context) error {
-	// 假设JWT令牌在请求的Authorization头部中发送，并且为"Bearer {token}"
-	authHeader := ctx.Value("Authorization").(string)
-	if authHeader == "" {
-		return e.Error_NO_AUTH_HEADER
-	}
-	// 提取令牌部分，通常是"Bearer {token}"格式
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-	// 假设有一个黑名单或令牌存储机制来标记失效的令牌
-	// 这里只是示例，实际应用中可能要使用`es.repo`调用具体的失效逻辑
-	err := es.repo.InvalidateToken(ctx, tokenString)
-	if err != nil {
-		return e.Error_FAILED_TO_LOGOUT
-	}
-	return nil
-}
-
-func (es *EmployeeSe) CreateEmployee(ctx context.Context, dto request.EmployeeDTO) error {
-	user := model.Employee{
-		Id:       dto.Id,
-		IdNumber: dto.IdNumber,
-		Name:     dto.Name,
-		Phone:    dto.Phone,
-		Sex:      dto.Sex,
-		UserName: dto.UserName,
-	}
-	user.Status = enum.ENABLE
-	// 新增用户初始密码为123456
-	user.Password = utils.MD5V("123456", "", 0)
-	err := es.repo.InsertUser(ctx, user)
-	return err
-}
-
-func (es *EmployeeSe) EditPassword(ctx context.Context, word request.EmployeeChangePassWord) error {
 
 }
