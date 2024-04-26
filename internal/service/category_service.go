@@ -17,7 +17,7 @@ type CategoryService interface {
 	SetStatus(ctx context.Context, id uint64, status int) error
 	AddCategory(ctx context.Context, dto request.CategoryDTO) error
 	DeleteCategory(ctx context.Context, id uint64) error
-	List(ctx context.Context) error
+	List(ctx context.Context, cate int) ([]model.Category, error)
 }
 
 type CategorySe struct {
@@ -81,6 +81,7 @@ func (cs *CategorySe) DeleteCategory(ctx context.Context, id uint64) error {
 	return err
 }
 
-func (cs *CategorySe) List(ctx context.Context) error {
-
+func (cs *CategorySe) List(ctx context.Context, cate int) ([]model.Category, error) {
+	list, err := cs.repo.List(ctx, cate)
+	return list, err
 }

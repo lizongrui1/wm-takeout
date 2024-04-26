@@ -17,8 +17,8 @@ import (
 type EmployeeService interface {
 	Login(ctx context.Context, login request.EmployeeLogin) (*response.EmployeeLogin, error)
 	Logout(ctx context.Context) error
-	CreateEmployee(ctx context.Context, dto request.EmployeeDTO) error
-	EditPassword(ctx context.Context, word request.EmployeeChangePassWord) error
+	AddEmployee(ctx context.Context, dto request.EmployeeDTO) error
+	UpdatePassword(ctx context.Context, word request.EmployeeChangePassWord) error
 	UpdateEmployee(ctx context.Context, dto request.EmployeeDTO) error
 	EmployeeQueryById(ctx context.Context, id uint64) (model.Employee, error)
 	EmployeeStatus(ctx context.Context, id uint64, status int) error
@@ -72,7 +72,7 @@ func (es *EmployeeSe) Logout(ctx context.Context) error {
 	return nil
 }
 
-func (es *EmployeeSe) CreateEmployee(ctx context.Context, dto request.EmployeeDTO) error {
+func (es *EmployeeSe) AddEmployee(ctx context.Context, dto request.EmployeeDTO) error {
 	user := model.Employee{
 		Id:       dto.Id,
 		IdNumber: dto.IdNumber,
@@ -88,7 +88,7 @@ func (es *EmployeeSe) CreateEmployee(ctx context.Context, dto request.EmployeeDT
 	return err
 }
 
-func (es *EmployeeSe) EditPassword(ctx context.Context, word request.EmployeeChangePassWord) error {
+func (es *EmployeeSe) UpdatePassword(ctx context.Context, word request.EmployeeChangePassWord) error {
 	employee, err := es.repo.GetById(ctx, word.EmpId)
 	if err != nil {
 		return err

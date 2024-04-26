@@ -12,4 +12,5 @@ type CategoryRepo interface {
 	Update(ctx context.Context, category model.Category) error
 	PageQuery(ctx context.Context, dto request.CategoryPageQueryDTO) error
 	SetStatus(ctx context.Context, category model.Category) error
+	List(ctx context.Context, cate int) ([]model.Category, error)
 }

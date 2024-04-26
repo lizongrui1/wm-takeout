@@ -10,7 +10,7 @@ type SetMealDTO struct {
 	Status       int                 `json:"status"`        // 套餐状态
 	Description  string              `json:"description"`   // 套餐描述
 	Image        string              `json:"image"`         // 套餐图片
-	SetMealDishs []model.SetMealDish `json:"setmealDishes"` // 套餐菜品关系
+	SetMealDishs []model.SetMealDish `json:"setmealDishes"` // 套餐菜品关系，一个套餐可以包含多个菜品，且一个菜品可以属于多个套餐，所以它们之间形成了多对多的关系。在数据库中直接存储多对多关系是不可行的，因此需要一个额外的表来表示这种关系。
 }
 
 type SetMealPageQueryDTO struct {

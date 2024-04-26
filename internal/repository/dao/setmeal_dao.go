@@ -19,7 +19,7 @@ func (s *SetMealDao) Transaction(ctx context.Context) tx.Transaction {
 	return tx.NewGormTransaction(s.db, ctx)
 }
 
-func (s *SetMealDao) InsertCombo(trans tx.Transaction, meal *model.SetMeal) error {
+func (s *SetMealDao) InsertSetMeal(trans tx.Transaction, meal *model.SetMeal) error {
 	db, err := tx.GetGormDB(trans)
 	if err != nil {
 		return nil
@@ -28,7 +28,7 @@ func (s *SetMealDao) InsertCombo(trans tx.Transaction, meal *model.SetMeal) erro
 	return err
 }
 
-func (s *SetMealDao) DeleteCombo(ctx context.Context, id uint64) error {
+func (s *SetMealDao) DeleteSetMeal(ctx context.Context, id uint64) error {
 	err := s.db.WithContext(ctx).Model(&model.SetMeal{Id: id}).Update("status", enum.DISABLE).Error
 	return err
 }
@@ -36,6 +36,7 @@ func (s *SetMealDao) DeleteCombo(ctx context.Context, id uint64) error {
 func (s *SetMealDao) PageQuery(ctx context.Context, dto request.SetMealPageQueryDTO) (*common.PageResult, error) {
 
 }
+
 func (s *SetMealDao) SetStatus(ctx context.Context, id uint64, status int) error {
 	err := s.db.WithContext(ctx).Model(&model.SetMeal{
 		Id: id,

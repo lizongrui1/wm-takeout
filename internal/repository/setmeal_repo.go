@@ -10,8 +10,8 @@ import (
 
 type SetMealRepo interface {
 	Transaction(ctx context.Context) tx.Transaction
-	InsertCombo(tran tx.Transaction, meal *model.SetMeal) error
-	DeleteCombo(ctx context.Context, id uint64) error
+	InsertSetMeal(tran tx.Transaction, meal *model.SetMeal) error
+	DeleteSetMeal(ctx context.Context, id uint64) error
 	PageQuery(ctx context.Context, dto request.SetMealPageQueryDTO) (*common.PageResult, error)
 	SetStatus(ctx context.Context, id uint64, status int) error
 }
