@@ -14,4 +14,5 @@ type SetMealRepo interface {
 	DeleteSetMeal(ctx context.Context, id uint64) error
 	PageQuery(ctx context.Context, dto request.SetMealPageQueryDTO) (*common.PageResult, error)
 	SetStatus(ctx context.Context, id uint64, status int) error
+	GetById(db tx.Transaction, dishid uint64) (model.SetMeal, error)
 }
