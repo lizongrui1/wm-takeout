@@ -45,7 +45,8 @@ func (cs *CategorySe) UpdateCategory(ctx context.Context, dto request.CategoryDT
 }
 
 func (cs *CategorySe) PageQuery(ctx context.Context, dto request.CategoryPageQueryDTO) (*common.PageResult, error) {
-
+	query, err := cs.repo.PageQuery(ctx, dto)
+	return query, err
 }
 
 func (cs *CategorySe) SetStatus(ctx context.Context, id uint64, status int) error {

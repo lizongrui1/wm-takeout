@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"wm-take-out/common"
 	"wm-take-out/internal/api/request"
@@ -25,10 +24,7 @@ type SetMealSe struct {
 }
 
 func (ss *SetMealSe) EditSetMeal(ctx context.Context, dto request.SetMealDTO) error {
-	price, err := strconv.ParseFloat(dto.Price, 64)
-	if err != nil {
-		return fmt.Errorf("无法解析价格 '%s': %v", dto.Price, err)
-	}
+	price, _ := strconv.ParseFloat(dto.Price, 10)
 	setmeal := model.SetMeal{
 		Id:          dto.Id,
 		CategoryId:  dto.CategoryId,
@@ -38,27 +34,31 @@ func (ss *SetMealSe) EditSetMeal(ctx context.Context, dto request.SetMealDTO) er
 		Description: dto.Description,
 		Image:       dto.Image,
 	}
+
 	transaction := ss.repo.Transaction(ctx)
-	err = transaction.Begin()
-	if err != nil {
+	if err := transaction.Begin(); err != nil {
 		return err
 	}
 	defer func() {
-		if err := recover(); err != nil {
+		if r := recover(); r != nil {
 			transaction.Rollback()
+			panic(r) // 重新抛出panic，保持原有panic的行为
 		}
 	}()
-	err = ss.repo.InsertSetMeal(transaction, &setmeal)
-	if err != nil {
+
+	if err := ss.repo.InsertSetMeal(transaction, &setmeal); err != nil {
+		transaction.Rollback()
 		return err
 	}
+
 	for _, setmealDish := range dto.SetMealDishs {
 		setmealDish.SetmealId = setmeal.Id
 	}
-	err = ss.dishrepo.InsertCombo(transaction, dto.SetMealDishs)
-	if err != nil {
+	if err := ss.dishrepo.InsertCombo(transaction, dto.SetMealDishs); err != nil {
+		transaction.Rollback()
 		return err
 	}
+
 	return transaction.Commit()
 }
 
