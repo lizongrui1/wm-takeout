@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"wm-take-out/common"
 	"wm-take-out/internal/api/request"
 	"wm-take-out/internal/api/response"
+	"wm-take-out/internal/enum"
 	"wm-take-out/internal/model"
 	"wm-take-out/internal/repository"
 )
@@ -26,11 +28,42 @@ type DishSe struct {
 }
 
 func (ds *DishSe) InsertDish(ctx context.Context, dto request.DishDTO) error {
-	price, _ := strconv.ParseFloat(dto.Price, 10)
+	price, _ := strconv.ParseFloat(strconv.FormatUint(dto.Price, 10), 64) // 注意: 未处理转换错误
 	dish := model.Dish{
-		Id:   0,
-		Name: dto.Name,
+		Id:          0,
+		Name:        dto.Name,
+		CategoryId:  dto.CategoryId,
+		Price:       price,
+		Image:       dto.Image,
+		Description: dto.Description,
+		Status:      enum.ENABLE,
 	}
+	transaction, err := ds.repo.Transaction(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to start transaction: %w", err)
+	}
+	if transaction == nil {
+		return fmt.Errorf("transaction is nil without error")
+	}
+	defer func() {
+		if r := recover(); r != nil || transaction.Error != nil {
+			transaction.Rollback()
+		}
+	}()
+	if err := ds.repo.InsertDish(transaction, &dish); err != nil {
+		return err
+	}
+	for i := range dto.Flavors {
+		dto.Flavors[i].DishId = dish.Id
+	}
+	if err := ds.dishFlavorRepo.InsertTaste(transaction, dto.Flavors); err != nil {
+		return err
+	}
+	if err := transaction.Commit().Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (ds *DishSe) DeleteDish(ctx context.Context, id string) error {
