@@ -25,7 +25,7 @@ type DishUpdateDTO struct {
 	Id          uint64             `json:"id" `
 	Name        string             `json:"name"`
 	CategoryId  uint64             `json:"categoryId"`
-	Price       string             `json:"price"`
+	Price       string             `json:"price"` // 这里为什么用的string
 	Image       string             `json:"image"`
 	Description string             `json:"description"`
 	Status      int                `json:"status"`

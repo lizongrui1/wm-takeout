@@ -63,7 +63,6 @@ func (ds *DishSe) InsertDish(ctx context.Context, dto request.DishDTO) error {
 	if err := transaction.Commit().Error; err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -72,28 +71,26 @@ func (ds *DishSe) DeleteDish(ctx context.Context, id string) error {
 	for _, idList := range idList {
 		dishId, _ := strconv.ParseUint(idList, 10, 64)
 		err := func() error {
-			transation, _ := ds.repo.Transaction(ctx)
+			transaction, _ := ds.repo.Transaction(ctx)
 			defer func() {
 				if r := recover(); r != nil {
-					transation.Rollback()
+					transaction.Rollback()
 				}
 			}()
-			err := ds.repo.Delete(transation, dishId)
+			err := ds.repo.Delete(transaction, dishId)
 			if err != nil {
 				return err
 			}
-			err = ds.dishFlavorRepo.DeleteById(transation, dishId)
+			err = ds.dishFlavorRepo.DeleteById(transaction, dishId)
 			if err != nil {
 				return err
 			}
+			return transaction.Commit().Error
 		}()
 		if err != nil {
 			return err
 		}
-		return nil
-
 	}
-
 	return nil
 }
 
@@ -109,8 +106,81 @@ func (ds *DishSe) UpdateDish(ctx context.Context, dto request.DishUpdateDTO) err
 		Status:      dto.Status,
 		Flavors:     dto.Flavors,
 	}
+	transaction, _ := ds.repo.Transaction(ctx)
+	defer func() {
+		if r := recover(); r != nil {
+			transaction.Rollback()
+		}
+	}()
+	err := ds.repo.Update(transaction, dish)
+	if err != nil {
+		return err
+	}
+	err = ds.dishFlavorRepo.DeleteById(transaction, dish.Id)
+	if err != nil {
+		return err
+	}
+	if len(dish.Flavors) != 0 {
+		err = ds.dishFlavorRepo.InsertTaste(transaction, dish.Flavors)
+		if err != nil {
+			return err
+		}
+	}
+	return transaction.Commit().Error
 }
 
 func (ds *DishSe) GetDishById(ctx context.Context, id uint64) (response.DishVo, error) {
+	dish, err := ds.repo.GetById(ctx, id)
+	dishVo := response.DishVo{
+		Id:          dish.Id,
+		Name:        dish.Name,
+		CategoryId:  dish.CategoryId,
+		Price:       dish.Price,
+		Image:       dish.Image,
+		Description: dish.Description,
+		Status:      dish.Status,
+		UpdateTime:  dish.UpdateTime,
+		Flavors:     dish.Flavors,
+	}
+	return dishVo, err
+}
 
+func (ds *DishSe) PageQuery(ctx context.Context, dto *request.DishPageQueryDTO) (*common.PageResult, error) {
+	pageResult, err := ds.repo.PageQuery(ctx, dto)
+	if err != nil {
+		return nil, err
+	}
+	return pageResult, err
+}
+
+func (ds *DishSe) SetStatus(ctx context.Context, id uint64, status int) error {
+	err := ds.repo.Status(ctx, id, status)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ds *DishSe) List(ctx context.Context, id uint64) ([]response.DishListVo, error) {
+	var dishListVo []response.DishListVo
+	dishList, err := ds.repo.List(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	for _, dish := range dishList {
+		dishListVo = append(dishListVo, response.DishListVo{
+			Id:          dish.Id,
+			Name:        dish.Name,
+			CategoryId:  dish.CategoryId,
+			Price:       dish.Price,
+			Image:       dish.Image,
+			Description: dish.Description,
+			Status:      dish.Status,
+			CreateTime:  dish.CreateTime,
+			UpdateTime:  dish.UpdateTime,
+			CreateUser:  dish.CreateUser,
+			UpdateUser:  dish.UpdateUser,
+		})
+	}
+	return dishListVo, nil
 }
