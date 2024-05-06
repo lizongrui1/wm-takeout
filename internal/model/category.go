@@ -38,6 +38,7 @@ func (c *Category) BeforeUpdate(tx *gorm.DB) error {
 	return nil
 }
 
+// TableName 指定了模型对应的数据库表名
 func (c *Category) TableName() string {
 	return "category"
 }

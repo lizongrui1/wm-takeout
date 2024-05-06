@@ -51,10 +51,10 @@ func (ss *SetMealSe) EditSetMeal(ctx context.Context, dto request.SetMealDTO) er
 		return err
 	}
 
-	for _, setmealDish := range dto.SetMealDishs {
+	for _, setmealDish := range dto.SetMealDishes {
 		setmealDish.SetmealId = setmeal.Id
 	}
-	if err := ss.dishrepo.InsertCombo(transaction, dto.SetMealDishs); err != nil {
+	if err := ss.dishrepo.InsertCombo(transaction, dto.SetMealDishes); err != nil {
 		transaction.Rollback()
 		return err
 	}
