@@ -12,6 +12,14 @@ import (
 
 const LOGGER_KEY = "zapLogger"
 
+type ILog interface {
+	Debug(args ...interface{})
+	Info(args ...interface{})
+	Warn(args ...interface{})
+	Error(args ...interface{})
+	Fatal(args ...interface{})
+}
+
 type Logger struct {
 	*zap.Logger
 }

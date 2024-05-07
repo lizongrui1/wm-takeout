@@ -10,6 +10,12 @@ type PageResult struct {
 	Records interface{} `json:"records"`
 }
 
+type Result struct {
+	Code int         `json:"code"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
 // PageVerify 分页查询 过滤器
 func PageVerify(page *int, pageSize *int) {
 	// 过滤 当前页、单页数量
