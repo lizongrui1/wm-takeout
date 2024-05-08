@@ -3,10 +3,12 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"wm-take-out/common"
 	"wm-take-out/common/e"
 	"wm-take-out/global"
 	"wm-take-out/internal/api/request"
+	"wm-take-out/internal/enum"
 	"wm-take-out/internal/service"
 )
 
@@ -27,7 +29,7 @@ func (ec *EmployeeController) Login(ctx *gin.Context) {
 	if err != nil {
 		code = e.ERROR
 		global.Log.Warn("EmployeeController login Error:", err.Error())
-		ctx.JSON(http.StatusUnauthorized, common.Result{
+		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
 		})
@@ -45,7 +47,7 @@ func (ec *EmployeeController) Logout(ctx *gin.Context) {
 	if err != nil {
 		code = e.ERROR
 		global.Log.Warn("EmployeeController login Error:", err.Error())
-		ctx.JSON(http.StatusUnauthorized, common.Result{
+		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
 		})
@@ -62,8 +64,8 @@ func (ec *EmployeeController) AddEmployee(ctx *gin.Context) {
 	err := ctx.Bind(&dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("AddEmployee Error:", err.Error())
-		ctx.JSON(http.StatusBadRequest, common.Result{
+		global.Log.Debug("Bind Error:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
 		})
@@ -87,5 +89,87 @@ func (ec *EmployeeController) AddEmployee(ctx *gin.Context) {
 
 func (ec *EmployeeController) UpdatePassword(ctx *gin.Context) {
 	code := e.SUCCESS
+	var cp request.EmployeeChangePassword
+	err := ctx.Bind(&cp)
+	if err != nil {
+		global.Log.Debug("Bind Error:", err.Error())
+		return
+	}
+	if id, ok := ctx.Get(enum.CurrentId); ok {
+		cp.EmpId = id.(uint64)
+	}
+	err = ec.service.UpdatePassword(ctx, cp)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("UpdatePassword  Error:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}
 
+func (ec *EmployeeController) UpdateEmployee(ctx *gin.Context) {
+	code := e.SUCCESS
+	var upe request.EmployeeDTO
+	err := ctx.Bind(&upe)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Debug("Bind Error:", err.Error())
+		return
+	}
+	err = ec.service.UpdateEmployee(ctx, upe)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("UpdateEmployee Error", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}
+
+func (ec *EmployeeController) EmployeeQueryById(ctx *gin.Context) {
+	code := e.SUCCESS
+	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	employee, err := ec.service.EmployeeQueryById(ctx, id)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("EmployeeQueryById", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+		Data: employee,
+	})
+}
+
+func (ec *EmployeeController) EmployeeStatus(ctx *gin.Context) {
+	code := e.SUCCESS
+	status, _ := strconv.Atoi(ctx.Param("status"))
+	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	err := ec.service.EmployeeStatus(ctx, id, status)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("EmployeeStatus Error", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+	}
+	global.Log.Info("Employee Status：", "id", id, "status:", status)
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
 }

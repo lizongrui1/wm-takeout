@@ -18,7 +18,7 @@ type EmployeeService interface {
 	Login(ctx context.Context, login request.EmployeeLogin) (*response.EmployeeLogin, error)
 	Logout(ctx context.Context) error
 	AddEmployee(ctx context.Context, dto request.EmployeeDTO) error
-	UpdatePassword(ctx context.Context, word request.EmployeeChangePassWord) error
+	UpdatePassword(ctx context.Context, word request.EmployeeChangePassword) error
 	UpdateEmployee(ctx context.Context, dto request.EmployeeDTO) error
 	EmployeeQueryById(ctx context.Context, id uint64) (model.Employee, error)
 	EmployeeStatus(ctx context.Context, id uint64, status int) error
@@ -88,7 +88,7 @@ func (es *EmployeeSe) AddEmployee(ctx context.Context, dto request.EmployeeDTO) 
 	return err
 }
 
-func (es *EmployeeSe) UpdatePassword(ctx context.Context, word request.EmployeeChangePassWord) error {
+func (es *EmployeeSe) UpdatePassword(ctx context.Context, word request.EmployeeChangePassword) error {
 	employee, err := es.repo.GetById(ctx, word.EmpId)
 	if err != nil {
 		return err
