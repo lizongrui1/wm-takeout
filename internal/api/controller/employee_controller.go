@@ -157,7 +157,7 @@ func (ec *EmployeeController) EmployeeQueryById(ctx *gin.Context) {
 
 func (ec *EmployeeController) EmployeeStatus(ctx *gin.Context) {
 	code := e.SUCCESS
-	status, _ := strconv.Atoi(ctx.Param("status"))
+	status, _ := strconv.Atoi(ctx.Query("status"))
 	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	err := ec.service.EmployeeStatus(ctx, id, status)
 	if err != nil {
@@ -171,5 +171,26 @@ func (ec *EmployeeController) EmployeeStatus(ctx *gin.Context) {
 	global.Log.Info("Employee Status：", "id", id, "status:", status)
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
+	})
+}
+
+func (ec *EmployeeController) PageQuery(ctx *gin.Context) {
+	code := e.SUCCESS
+	var epq request.EmployeePageQueryDTO
+	epq.Name = ctx.Query("name")
+	epq.Page, _ = strconv.Atoi(ctx.Query("page"))
+	epq.PageSize, _ = strconv.Atoi(ctx.Query("pageSize"))
+	result, err := ec.service.PageQuery(ctx, epq)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("PageQuery Error", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+		Data: result,
 	})
 }
