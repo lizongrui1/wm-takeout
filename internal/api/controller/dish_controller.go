@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"wm-take-out/common"
 	"wm-take-out/common/e"
 	"wm-take-out/global"
@@ -62,5 +63,76 @@ func (dc *DishController) DeleteDish(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
+	})
+}
+
+func (dc *DishController) UpdateDish(ctx *gin.Context) {
+	code := e.SUCCESS
+	dto := request.DishUpdateDTO{}
+	err := dc.service.UpdateDish(ctx, dto)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("Param UpdateDish Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	err := dc.service.UpdateDish(ctx, dto)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("UpdateDish Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}
+
+func (dc *DishController) GetDishById(ctx *gin.Context) {
+	code := e.SUCCESS
+	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	result, err := dc.service.GetDishById(ctx, id)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("GetDishById Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+		Data: result,
+	})
+}
+
+func (dc *DishController) PageQuery(ctx *gin.Context) {
+	code := e.SUCCESS
+	var dto request.DishPageQueryDTO
+	dto.Name = ctx.Query("name")
+	dto.Page, _ = strconv.Atoi(ctx.Query("page"))
+	dto.PageSize, _ = strconv.Atoi(ctx.Query("pageSize"))
+	dto.Status, _ = strconv.Atoi(ctx.Query("status"))
+	err := ctx.Bind(&dto)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("PageQuery Binding Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	result, _ := dc.service.PageQuery(ctx, &dto)
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+		Data: result,
 	})
 }
