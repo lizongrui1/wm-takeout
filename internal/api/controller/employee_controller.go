@@ -26,13 +26,13 @@ func (ec *EmployeeController) Login(ctx *gin.Context) {
 	err := ctx.Bind(&employeeLogin)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("EmployeeController login 解析失败")
+		global.Log.Debug("EmployeeController login 解析失败", "Err:", err.Error())
 		return
 	}
 	resp, err := ec.service.Login(ctx, employeeLogin)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("EmployeeController login Error:", err.Error())
+		global.Log.Warn("EmployeeController login Error:", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -50,7 +50,7 @@ func (ec *EmployeeController) Logout(ctx *gin.Context) {
 	err := ec.service.Logout(ctx)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("EmployeeController login Error:", err.Error())
+		global.Log.Warn("EmployeeController login Error:", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -68,7 +68,7 @@ func (ec *EmployeeController) AddEmployee(ctx *gin.Context) {
 	err := ctx.Bind(&dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("Bind Error:", err.Error())
+		global.Log.Debug("Bind Error:", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -79,7 +79,7 @@ func (ec *EmployeeController) AddEmployee(ctx *gin.Context) {
 	err = ec.service.AddEmployee(ctx, dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("AddEmployee Error:", err.Error())
+		global.Log.Warn("AddEmployee Error:", "Err:", err.Error())
 		ctx.JSON(http.StatusInternalServerError, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -96,7 +96,7 @@ func (ec *EmployeeController) UpdatePassword(ctx *gin.Context) {
 	var cp request.EmployeeChangePassword
 	err := ctx.Bind(&cp)
 	if err != nil {
-		global.Log.Debug("Bind Error:", err.Error())
+		global.Log.Debug("Bind Error:", "Err:", err.Error())
 		return
 	}
 	if id, ok := ctx.Get(enum.CurrentId); ok {
@@ -105,7 +105,7 @@ func (ec *EmployeeController) UpdatePassword(ctx *gin.Context) {
 	err = ec.service.UpdatePassword(ctx, cp)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("UpdatePassword  Error:", err.Error())
+		global.Log.Warn("UpdatePassword  Error:", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -123,13 +123,13 @@ func (ec *EmployeeController) UpdateEmployee(ctx *gin.Context) {
 	err := ctx.Bind(&upe)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("Bind Error:", err.Error())
+		global.Log.Debug("Bind Error:", "Err:", err.Error())
 		return
 	}
 	err = ec.service.UpdateEmployee(ctx, upe)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("UpdateEmployee Error", err.Error())
+		global.Log.Warn("UpdateEmployee Error", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -147,7 +147,7 @@ func (ec *EmployeeController) EmployeeQueryById(ctx *gin.Context) {
 	employee, err := ec.service.EmployeeQueryById(ctx, id)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("EmployeeQueryById", err.Error())
+		global.Log.Warn("EmployeeQueryById", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 		})
@@ -166,7 +166,7 @@ func (ec *EmployeeController) EmployeeStatus(ctx *gin.Context) {
 	err := ec.service.EmployeeStatus(ctx, id, status)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("EmployeeStatus Error", err.Error())
+		global.Log.Warn("EmployeeStatus Error", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -187,7 +187,7 @@ func (ec *EmployeeController) PageQuery(ctx *gin.Context) {
 	result, err := ec.service.PageQuery(ctx, epq)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("PageQuery Error", err.Error())
+		global.Log.Warn("PageQuery Error", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),

@@ -27,13 +27,13 @@ func (cc *CategoryController) UpdateCategory(ctx *gin.Context) {
 	err := ctx.Bind(&dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("param CategoryDTO json failed", err.Error())
+		global.Log.Debug("param CategoryDTO json failed", "Err:", err.Error())
 		return
 	}
 	err = cc.service.UpdateCategory(ctx, dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("UpdateCategory Error", err.Error())
+		global.Log.Warn("UpdateCategory Error", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -57,7 +57,7 @@ func (cc *CategoryController) PageQuery(ctx *gin.Context) {
 	query, err := cc.service.PageQuery(ctx, dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("PageQuery Error", err.Error())
+		global.Log.Warn("PageQuery Error", "Err:", err.Error())
 		// 这里到底要不要＋ctx.Json？
 	}
 	ctx.JSON(http.StatusOK, common.Result{
@@ -73,7 +73,7 @@ func (cc *CategoryController) SetStatus(ctx *gin.Context) {
 	err := cc.service.SetStatus(ctx, id, status)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("SetStatus Error", err.Error())
+		global.Log.Warn("SetStatus Error", "Err:", err.Error())
 		ctx.JSON(http.StatusOK, common.Result{
 			Code: code,
 			Msg:  err.Error(),
@@ -90,13 +90,13 @@ func (cc *CategoryController) AddCategory(ctx *gin.Context) {
 	err := ctx.Bind(&dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Debug("param CategoryDTO json failed", err.Error())
+		global.Log.Debug("param CategoryDTO json failed", "Err:", err.Error())
 		return
 	}
 	err = cc.service.AddCategory(ctx, dto)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("AddCategory Error", err.Error())
+		global.Log.Warn("AddCategory Error", "Err:", err.Error())
 	}
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
@@ -109,7 +109,7 @@ func (cc *CategoryController) DeleteCategory(ctx *gin.Context) {
 	err := cc.service.DeleteCategory(ctx, id)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("DeleteCategory Error", err.Error())
+		global.Log.Warn("DeleteCategory Error", "Err:", err.Error())
 	}
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
@@ -123,7 +123,7 @@ func (cc *CategoryController) List(ctx *gin.Context) {
 	list, err := cc.service.List(ctx, cate)
 	if err != nil {
 		code = e.ERROR
-		global.Log.Warn("List Query Error", err.Error())
+		global.Log.Warn("List Query Error", "Err:", err.Error())
 	}
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
