@@ -15,6 +15,12 @@ type CategoryController struct {
 	service service.CategoryService
 }
 
+func NewCategoryController(categoryService service.CategoryService) *CategoryController {
+	return &CategoryController{
+		service: categoryService,
+	}
+}
+
 func (cc *CategoryController) UpdateCategory(ctx *gin.Context) {
 	code := e.SUCCESS
 	var dto request.CategoryDTO

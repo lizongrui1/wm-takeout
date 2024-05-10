@@ -16,6 +16,10 @@ type EmployeeController struct {
 	service service.EmployeeService
 }
 
+func NewEmployeeController(employeeService service.EmployeeService) *EmployeeController {
+	return &EmployeeController{service: employeeService}
+}
+
 func (ec *EmployeeController) Login(ctx *gin.Context) {
 	code := e.SUCCESS
 	employeeLogin := request.EmployeeLogin{}
