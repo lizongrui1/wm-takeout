@@ -79,7 +79,7 @@ func (dc *DishController) UpdateDish(ctx *gin.Context) {
 		})
 		return
 	}
-	err := dc.service.UpdateDish(ctx, dto)
+	err = dc.service.UpdateDish(ctx, dto)
 	if err != nil {
 		code = e.ERROR
 		global.Log.Warn("UpdateDish Error", "Err:", err.Error())
@@ -131,6 +131,44 @@ func (dc *DishController) PageQuery(ctx *gin.Context) {
 		return
 	}
 	result, _ := dc.service.PageQuery(ctx, &dto)
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+		Data: result,
+	})
+}
+
+func (dc *DishController) SetStatus(ctx *gin.Context) {
+	code := e.SUCCESS
+	status, _ := strconv.Atoi(ctx.Param("status"))
+	id, _ := strconv.ParseUint(ctx.Query("id"), 10, 64)
+	err := dc.service.SetStatus(ctx, id, status)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("Status Set Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}
+
+func (dc *DishController) List(ctx *gin.Context) {
+	code := e.SUCCESS
+	categoryId, _ := strconv.ParseUint(ctx.Query("categoryId"), 10, 64)
+	result, err := dc.service.List(ctx, categoryId)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("Query List Error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, common.Result{
 		Code: code,
 		Data: result,

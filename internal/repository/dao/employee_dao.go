@@ -43,7 +43,7 @@ func (e *EmployeeDao) UpdateStatus(ctx context.Context, employee model.Employee)
 }
 
 func (e *EmployeeDao) PageQuery(ctx context.Context) error {
-
+	return
 }
 
 func NewEmployeeDao(db *gorm.DB) repository.EmployeeRepo {

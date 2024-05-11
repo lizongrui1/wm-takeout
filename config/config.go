@@ -8,8 +8,6 @@ type AllConfig struct {
 	Redis      Redis
 	Log        global.Log
 	Jwt        Jwt
-	AliOss     AliOss
-	Wechat     Wechat
 }
 
 type DataSource struct {
