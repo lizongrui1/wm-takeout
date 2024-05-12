@@ -15,7 +15,7 @@ type SetmealController struct {
 	service service.SetMealService
 }
 
-func (sc *SetmealController) NewSetmealController(service service.SetMealService) *SetmealController {
+func NewSetmealController(service service.SetMealService) *SetmealController {
 	return &SetmealController{service: service}
 }
 

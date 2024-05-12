@@ -3,6 +3,7 @@ package dao
 import (
 	"gorm.io/gorm"
 	"wm-take-out/internal/model"
+	"wm-take-out/internal/repository"
 )
 
 type DishFlavor struct {
@@ -33,4 +34,8 @@ func (d *DishFlavor) GetDishFlavor(db *gorm.DB, id uint64) ([]model.DishFlavor, 
 		return nil, err
 	}
 	return dishFlavors, nil
+}
+
+func NewDishFlavorDao() repository.DishFlavorRepo {
+	return &DishFlavor{}
 }

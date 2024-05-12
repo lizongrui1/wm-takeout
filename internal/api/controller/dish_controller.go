@@ -15,7 +15,7 @@ type DishController struct {
 	service service.DishService
 }
 
-func (dc *DishController) NewDishController(service service.DishService) *DishController {
+func NewDishController(service service.DishService) *DishController {
 	return &DishController{
 		service: service,
 	}

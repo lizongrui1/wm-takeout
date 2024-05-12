@@ -3,7 +3,11 @@ package dao
 import (
 	"context"
 	"gorm.io/gorm"
+	"wm-take-out/common"
+	"wm-take-out/internal/api/request"
+	"wm-take-out/internal/api/response"
 	"wm-take-out/internal/model"
+	"wm-take-out/internal/repository"
 )
 
 type DishDao struct {
@@ -52,7 +56,40 @@ func (d *DishDao) GetById(ctx context.Context, id uint64) (*model.Dish, error) {
 	return &dish, nil
 }
 
-func (d *DishDao) Status(ctx context.Context, dish model.Dish) error {
-	err := d.db.WithContext(ctx).Model(&dish).Update("status", dish.Status).Error
+func (d *DishDao) Status(ctx context.Context, id uint64, status int) error {
+	err := d.db.WithContext(ctx).Model(&model.Dish{Id: id}).Update("status", status).Error
 	return err
+}
+
+func (d *DishDao) PageQuery(ctx context.Context, dto *request.DishPageQueryDTO) (*common.PageResult, error) {
+	var pageResult common.PageResult
+	var dishList []response.DishPageVo
+	query := d.db.WithContext(ctx).Model(&model.Dish{})
+	if dto.Name != "" {
+		query = query.Where("name LIKE", "%"+dto.Name+"%")
+	}
+	if dto.Status != 0 {
+		query = query.Where("status = ?", dto.Status)
+	}
+	if dto.CategoryId != 0 {
+		query = query.Where("category_id = ?", dto.CategoryId)
+	}
+	if err := query.Count(&pageResult.Total).Error; err != nil {
+		return nil, err
+	}
+	if err := query.Scopes(pageResult.Paginate(&dto.Page, &dto.PageSize)).Select("dish.*,c.name as category_name").Joins("LEFT OUTER JOIN category c ON C.id = dish.category_id").Order("dish_create_time desc").Scan(&dishList).Error; err != nil {
+		return nil, err
+	}
+	pageResult.Records = dishList
+	return &pageResult, nil
+}
+
+func (d *DishDao) List(ctx context.Context, categoryId uint64) ([]model.Dish, error) {
+	var dishList []model.Dish
+	err := d.db.WithContext(ctx).Where("category_id = ?", categoryId).Find(&dishList).Error
+	return dishList, err
+}
+
+func NewDishRepo(db *gorm.DB) repository.DishRepo {
+	return &DishDao{db: db}
 }

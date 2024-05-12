@@ -86,3 +86,7 @@ func (cs *CategorySe) List(ctx context.Context, cate int) ([]model.Category, err
 	list, err := cs.repo.List(ctx, cate)
 	return list, err
 }
+
+func NewCategoryService(repo repository.CategoryRepo) CategoryService {
+	return &CategorySe{repo: repo}
+}
