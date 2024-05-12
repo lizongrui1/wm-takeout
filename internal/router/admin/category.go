@@ -7,5 +7,5 @@ type CategoryRouter struct {
 
 func (cr *CategoryRouter) RouterInit(group *gin.RouterGroup) {
 	privateRouter := group.Group("category")
-
+	privateRouter := group.Group()
 }

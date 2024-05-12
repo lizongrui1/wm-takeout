@@ -14,13 +14,13 @@ type EmployeeRouter struct {
 }
 
 func (er *EmployeeRouter) RouterInit(group *gin.RouterGroup) {
-	pubilcRouter := group.Group("employee")  // 公开接口
+	publicRouter := group.Group("employee")  // 公开接口
 	privateRouter := group.Group("employee") // 管理员接口
 	privateRouter.Use(middleware.VerifyJWTAdmin())
 	er.service = service.NewEmployeeService(dao.NewEmployeeDao(global.DB))
 	employeeCtl := controller.NewEmployeeController(er.service)
 	{
-		pubilcRouter.POST("/login", employeeCtl.Login)
+		publicRouter.POST("/login", employeeCtl.Login)
 		privateRouter.POST("/logout", employeeCtl.Logout)
 		privateRouter.PUT("/editPassword", employeeCtl.UpdatePassword)
 		privateRouter.POST("/status/:status", employeeCtl.EmployeeStatus)
