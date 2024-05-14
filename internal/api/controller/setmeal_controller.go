@@ -101,3 +101,47 @@ func (sc *SetmealController) GetById(ctx *gin.Context) {
 		Data: result,
 	})
 }
+
+func (sc *SetmealController) AddSetmeal(ctx *gin.Context) {
+	code := e.SUCCESS
+	var dto request.SetMealDTO
+	err := ctx.Bind(&dto)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Debug("Bind Error:", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	err = sc.service.AddSetmeal(ctx, dto)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("Add Setmeal Failed", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+		})
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}
+
+func (sc *SetmealController) DeleteSetmeal(ctx *gin.Context) {
+	code := e.SUCCESS
+	ids := ctx.Query("ids")
+	err := sc.service.DeleteSetmeal(ctx, ids)
+	if err != nil {
+		code = e.ERROR
+		global.Log.Warn("delete setmeal error", "Err:", err.Error())
+		ctx.JSON(http.StatusOK, common.Result{
+			Code: code,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, common.Result{
+		Code: code,
+	})
+}

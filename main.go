@@ -2,16 +2,13 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"wm-take-out/global"
+	"wm-take-out/initialize"
 )
 
 func main() {
-	router := gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Auth endpoint reached",
-		})
-	})
+	router := initialize.GlobalInit()
+	gin.SetMode(global.Config.Server.Level)
 
 	err := router.Run(":8080")
 	if err != nil {

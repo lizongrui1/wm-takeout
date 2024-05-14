@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"wm-take-out/global/tx"
 	"wm-take-out/internal/model"
+	"wm-take-out/internal/repository"
 )
 
 type SetMealDishDao struct {
@@ -29,4 +30,9 @@ func (s *SetMealDishDao) GetBySetMealId(trans tx.Transaction, Id uint64) ([]mode
 	if err != nil {
 		return SetMealDishList, err
 	}
+	return SetMealDishList, err
+}
+
+func NewSetmealDishDao() repository.SetMealDishRepo {
+	return &SetMealDishDao{}
 }

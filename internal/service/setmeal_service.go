@@ -16,6 +16,8 @@ type SetMealService interface {
 	PageQuery(ctx context.Context, dto request.SetMealPageQueryDTO) (*common.PageResult, error)
 	SetStatus(ctx context.Context, id uint64, status int) error
 	GetById(ctx context.Context, id uint64) (response.SetMealWithDishByIdVo, error)
+	DeleteSetmeal(ctx context.Context, ids string) error
+	AddSetmeal(ctx context.Context, dto request.SetMealDTO) error
 }
 
 type SetMealSe struct {
@@ -108,6 +110,14 @@ func (ss *SetMealSe) GetById(ctx context.Context, id uint64) (response.SetMealWi
 		UpdateTime:    setMeal.UpdateTime,
 	}
 	return setMealVo, nil
+}
+
+func (ss *SetMealSe) DeleteSetmeal(ctx context.Context, ids string) error {
+
+}
+
+func (ss *SetMealSe) AddSetmeal(ctx context.Context, dto request.SetMealDTO) error {
+
 }
 
 func NewSetMealService(repo repository.SetMealRepo, dishrepo repository.SetMealDishRepo) SetMealService {
