@@ -9,9 +9,5 @@ import (
 func main() {
 	router := initialize.GlobalInit()
 	gin.SetMode(global.Config.Server.Level)
-
-	err := router.Run(":8080")
-	if err != nil {
-		return
-	}
+	router.Run(":8080")
 }
